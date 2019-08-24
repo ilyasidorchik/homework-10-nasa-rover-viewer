@@ -1,2 +1,72 @@
-// Реализуйте редьюсер
-// Файл с тестами RoverPhotos.test.js поможет вам в этом
+import { handleActions } from 'redux-actions';
+import { combineReducers } from 'redux';
+
+import {
+    changeSol,
+    fetchPhotosRequest,
+    fetchPhotosSuccess,
+    fetchPhotosFailure
+} from './actions';
+
+const sol = handleActions(
+    {
+        [changeSol]: (_state, action) => ({
+            ..._state,
+            current: action.payload
+        })
+    },
+    {
+        current: 1,
+        min: 1,
+        max: 100
+    }
+);
+
+const photos = handleActions(
+    {
+        [fetchPhotosRequest]: (_state, action) => ({
+            ..._state,
+            [action.payload.name]: {
+                ..._state[action.payload.name],
+                [action.payload.sol]: {
+                    isLoading: true,
+                    isLoaded: false,
+                    photos: []
+                }
+            }
+        }),
+        [fetchPhotosSuccess]: (_state, action) => ({
+            ..._state,
+            [action.payload.name]: {
+                ..._state[action.payload.name],
+                [action.payload.sol]: {
+                    isLoading: false,
+                    isLoaded: true,
+                    photos: [...action.payload.photos]
+                }
+            }
+        }),
+        [fetchPhotosFailure]: (_state, action) => ({
+            ..._state,
+            [action.payload.name]: {
+                ..._state[action.payload.name],
+                [action.payload.sol]: {
+                    isLoading: false,
+                    isLoaded: true,
+                    photos: [],
+                    error: action.payload.error
+                }
+            }
+        })
+    },
+    {
+        curiosity: {},
+        opportunity: {},
+        spirit: {}
+    }
+);
+
+export default combineReducers({
+    sol,
+    photos
+});
