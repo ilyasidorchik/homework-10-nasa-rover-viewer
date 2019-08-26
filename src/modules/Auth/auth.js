@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
+import { combineReducers } from 'redux';
 
 import { addKey } from './actions';
-import { combineReducers } from '../../../../homework-9-github-follower-list/node_modules/redux';
 
 const apiKey = handleActions(
     {
@@ -13,3 +13,8 @@ const apiKey = handleActions(
 export default combineReducers({
     apiKey
 });
+
+
+// Selectors
+export const getIsAuthorized = (state) => (state.auth.apiKey ? true : false);
+export const getApiKey = (state) => state.auth.apiKey;
